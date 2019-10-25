@@ -43,7 +43,6 @@ export default {
       depts: [],
       deptId: null,
       form: {
-        _id: "",
         permissionName: ""
       },
       rules: {

@@ -39,7 +39,7 @@ export function getLevel() {
 
 export function del(id) {
   return request({
-    url: 'api/dataUsers/' + id,
+    url: 'api/dataPermissions/' + id,
     method: 'delete'
   })
 }

@@ -60,16 +60,6 @@
                 <span>{{ parseTime(scope.row.lastUpdateTime) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="是否删除" align="center">
-              <template slot-scope="scope">
-                <div v-for="item in dicts" :key="item.id">
-                  <el-tag
-                    v-if="scope.row.delete.toString() === item.value"
-                    :type="scope.row.delete ? '' : 'info'"
-                  >{{ item.label }}</el-tag>
-                </div>
-              </template>
-            </el-table-column>
             <el-table-column
               v-if="checkPermission(['ADMIN','ROLES_ALL','ROLES_EDIT','ROLES_DELETE'])"
               label="操作"

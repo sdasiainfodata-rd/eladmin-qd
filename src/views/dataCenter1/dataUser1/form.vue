@@ -174,7 +174,7 @@ export default {
       getAll()
         .then(res => {
           console.log(res);
-          this.roles = res;
+          this.roles = res.content;
         })
         .catch(err => {
           console.log(err.response.data.message);

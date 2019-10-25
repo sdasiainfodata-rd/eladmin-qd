@@ -11,21 +11,6 @@
         class="filter-item"
         @keyup.enter.native="toQuery"
       />
-      <el-select
-        v-model="query.enabled"
-        clearable
-        placeholder="状态"
-        class="filter-item"
-        style="width: 90px"
-        @change="toQuery"
-      >
-        <el-option
-          v-for="item in enabledTypeOptions"
-          :key="item.key"
-          :label="item.display_name"
-          :value="item.key"
-        />
-      </el-select>
       <el-button
         class="filter-item"
         size="mini"
@@ -60,16 +45,6 @@
       <el-table-column prop="lastUpdateTime" label="修改时间">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.lastUpdateTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否删除" align="center">
-        <template slot-scope="scope">
-          <div v-for="item in dicts" :key="item.id">
-            <el-tag
-              v-if="scope.row.delete.toString() === item.value"
-              :type="scope.row.delete ? '' : 'info'"
-            >{{ item.label }}</el-tag>
-          </div>
         </template>
       </el-table-column>
       <el-table-column
@@ -167,6 +142,7 @@ export default {
     },
     subDelete(id) {
       this.delLoading = true;
+      console.log(id);
       del(id)
         .then(res => {
           this.delLoading = false;
