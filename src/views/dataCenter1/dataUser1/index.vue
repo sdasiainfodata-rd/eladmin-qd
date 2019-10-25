@@ -278,12 +278,8 @@ export default {
       // 无刷新更新 表格数据
       get(this.currentName).then(res => {
         for (let i = 0; i < this.data.length; i++) {
-          if (res.id === this.data[i].id) {
+          if (res._id === this.data[i]._id) {
             this.data[i] = res;
-            this.dataRoleIds = [];
-            data.dataRoles.forEach(function(data, index) {
-              _this.dataRoleIds.push(data._id);
-            });
             break;
           }
         }

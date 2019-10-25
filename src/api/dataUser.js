@@ -18,7 +18,7 @@ export function add(data) {
 
 export function get(username) {
   return request({
-    url: 'api/dataUser/' + username,
+    url: 'api/dataUsers/edit/' + username,
     method: 'get'
   })
 }

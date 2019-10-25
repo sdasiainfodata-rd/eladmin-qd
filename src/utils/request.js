@@ -20,6 +20,10 @@ service.interceptors.request.use(
         var id = config.url;
         id = id.replace('api/dataUsers/', '')
         config.url = 'admin/users/' + id
+      } else if (config.url.startsWith('api/dataUsers/edit/')) {
+        var id = config.url;
+        id = id.replace('api/dataUsers/edit/', '')
+        config.url = 'admin/users/' + id
       } else {
         config.url = 'admin/users'
       }
