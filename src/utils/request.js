@@ -14,7 +14,7 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    console.log(config.baseURL)
+    console.log(config)
     if (config.url.startsWith('api/dataUsers')) {
       if (config.method === 'delete') {
         var id = config.url;
@@ -36,10 +36,26 @@ service.interceptors.request.use(
         var id = config.url;
         id = id.replace('api/dataRoles/', '')
         config.url = 'admin/roles/' + id
+      } else if (config.url.startsWith('api/dataRoles/edit/')) {
+        var id = config.url;
+        id = id.replace('api/dataRoles/edit/', '')
+        config.url = 'admin/roles/' + id
       } else if (config.url === 'api/dataRoles/tree') {
         config.url = 'admin/roles/tree'
       } else {
         config.url = 'admin/roles'
+      }
+      config.baseURL = 'https://localhost:9090'
+    }
+    if (config.url.startsWith('api/dataPermissions')) {
+      if (config.method === 'delete') {
+        var id = config.url;
+        id = id.replace('api/dataPermissions/', '')
+        config.url = 'admin/permissions/' + id
+      } else if (config.url === 'api/dataPermissions/tree') {
+        config.url = 'admin/permissions/tree'
+      } else {
+        config.url = 'admin/permissions'
       }
       config.baseURL = 'https://localhost:9090'
     }

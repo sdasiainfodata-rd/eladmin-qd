@@ -3,20 +3,20 @@
     :visible.sync="dialog"
     :close-on-click-modal="false"
     :before-close="cancel"
-    :title="isAdd ? '新增用户' : '编辑用户'"
+    :title="isAdd ? '新增角色' : '编辑角色'"
     append-to-body
     width="500px"
   >
     <el-form ref="formm" :model="formm" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="用户名称" prop="username">
-        <el-input v-model="formm.username" style="width: 370px;" />
+      <el-form-item label="角色名称" prop="roleName">
+        <el-input v-model="formm.roleName" style="width: 370px;" />
       </el-form-item>
-      <el-form-item v-if="isAdd" style="margin-bottom: 0px;" label="角色">
-        <el-select v-model="roleIds" style="width: 370px;" multiple placeholder="请选择">
+      <el-form-item v-if="isAdd" style="margin-bottom: 0px;" label="权限">
+        <el-select v-model="permissionIds" style="width: 370px;" multiple placeholder="请选择">
           <el-option
-            v-for="(item, index) in roles"
-            :key="item.roleName + index"
-            :label="item.roleName"
+            v-for="(item, index) in permissions"
+            :key="item.permissionName + index"
+            :label="item.permissionName"
             :value="item._id"
           />
         </el-select>
@@ -49,8 +49,8 @@
 
 <script>
 import { getDepts } from "@/api/dept";
-import { add, edit } from "@/api/dataUser";
-import { getAll } from "@/api/dataRole";
+import { add, edit } from "@/api/dataRole";
+import { getAll } from "@/api/dataPermission";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 export default {
@@ -68,8 +68,8 @@ export default {
       dialog: false,
       depts: [],
       deptIds: [],
-      roleIds: [],
-      roles: [],
+      permissionIds: [],
+      permissions: [],
       form: {
         name: "",
         depts: [],
@@ -79,8 +79,8 @@ export default {
         roles: []
       },
       formm: {
-        username: "",
-        dataRoles: [],
+        roleName: "",
+        permissions: [],
         _id: ""
       },
       rules: {
@@ -110,11 +110,11 @@ export default {
       this.$refs["formm"].validate(valid => {
         if (valid) {
           this.loading = true;
-          this.formm.dataRoles = [];
-          this.roles.forEach(element => {
-            this.roleIds.forEach(id => {
+          this.formm.permissions = [];
+          this.permissions.forEach(element => {
+            this.permissionIds.forEach(id => {
               if (id === element._id) {
-                this.formm.dataRoles.push(element.roleName);
+                this.formm.permissions.push(element.permissionName);
               }
             });
           });
@@ -170,11 +170,10 @@ export default {
         dataRoles: []
       };
     },
-    getRoles() {
+    getPermissions() {
       getAll()
         .then(res => {
-          console.log(res);
-          this.roles = res;
+          this.permissions = res.content;
         })
         .catch(err => {
           console.log(err.response.data.message);

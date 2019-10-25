@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-export function getRolesTree() {
+export function getPermissionTree() {
   return request({
-    url: 'api/dataRoles/tree',
+    url: 'api/dataPermissions/tree',
     method: 'get'
   })
 }
@@ -10,14 +10,14 @@ export function getRolesTree() {
 // 获取所有的Role
 export function getAll() {
   return request({
-    url: 'api/dataRoles',
+    url: 'api/dataPermissions',
     method: 'get'
   })
 }
 
 export function add(data) {
   return request({
-    url: 'api/dataUsers',
+    url: 'api/dataPermissions',
     method: 'post',
     data
   })
@@ -46,7 +46,7 @@ export function del(id) {
 
 export function edit(data) {
   return request({
-    url: 'api/dataRoles',
+    url: 'api/dataPermissions',
     method: 'put',
     data
   })

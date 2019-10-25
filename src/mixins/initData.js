@@ -21,9 +21,6 @@ export default {
           //   this.data = res
           //   this.total = res.length
           // }
-          console.log(this.page)
-          console.log(this.size)
-          console.log(this.total)
           setTimeout(() => {
             this.loading = false
           }, this.time)

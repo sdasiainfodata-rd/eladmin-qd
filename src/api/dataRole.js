@@ -17,7 +17,7 @@ export function getAll() {
 
 export function add(data) {
   return request({
-    url: 'api/dataUsers',
+    url: 'api/dataRoles',
     method: 'post',
     data
   })
@@ -25,7 +25,7 @@ export function add(data) {
 
 export function get(id) {
   return request({
-    url: 'api/roles/' + id,
+    url: 'api/dataRoles/edit/' + id,
     method: 'get'
   })
 }
@@ -39,7 +39,7 @@ export function getLevel() {
 
 export function del(id) {
   return request({
-    url: 'api/dataUsers/' + id,
+    url: 'api/dataRoles/' + id,
     method: 'delete'
   })
 }

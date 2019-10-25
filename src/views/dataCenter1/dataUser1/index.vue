@@ -201,7 +201,7 @@ export default {
       const sort = "level,asc";
       const query = this.query;
       const value = query.value;
-      this.params = { page: this.page, size: this.size, sort: sort };
+      this.params = { page: this.page + 1, size: this.size, sort: sort };
       if (value) {
         this.params["username"] = value;
       }

@@ -49,7 +49,7 @@
             style="width: 100%;"
             @current-change="handleCurrentChange"
           >
-            <el-table-column prop="username" label="名称" />
+            <el-table-column prop="roleName" label="名称" />
             <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建时间">
               <template slot-scope="scope">
                 <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -132,18 +132,18 @@
             <el-button
               v-permission="['ADMIN','ROLES_ALL','ROLES_EDIT']"
               :disabled="!showButton"
-              :loading="dataRoleLoading"
+              :loading="dataPermissionLoading"
               icon="el-icon-check"
               size="mini"
               style="float: right; padding: 6px 9px"
               type="primary"
-              @click="saveDataRole"
+              @click="saveDataPermission"
             >保存</el-button>
           </div>
           <el-tree
-            ref="dataRole"
+            ref="dataPermission"
             :data="dataPermissions"
-            :default-checked-keys="dataRoleIds"
+            :default-checked-keys="dataPermissionIds"
             :props="defaultProps"
             show-checkbox
             accordion
@@ -160,7 +160,7 @@ import checkPermission from "@/utils/permission";
 import initData from "@/mixins/initData";
 import initDict from "@/mixins/initDict";
 import { edit, get, del } from "@/api/dataRole";
-import { getPermissionsTree } from "@/api/dataPermission";
+import { getPermissionTree } from "@/api/dataPermission";
 import { parseTime } from "@/utils/index";
 import eForm from "./form";
 export default {
@@ -175,13 +175,13 @@ export default {
       },
       currentId: 0,
       currentName: "",
-      dataRoleLoading: false,
+      dataPermissionLoading: false,
       showButton: false,
       opt: "角色分配",
       delLoading: false,
       dataPermissions: [],
-      dataRoleIds: [],
-      dataRoleMap: []
+      dataPermissionIds: [],
+      dataPermissionMap: []
     };
   },
   created() {
@@ -200,12 +200,12 @@ export default {
       const sort = "level,asc";
       const query = this.query;
       const value = query.value;
-      this.params = { page: this.page, size: this.size, sort: sort };
+      this.params = { page: this.page + 1, size: this.size, sort: sort };
       if (value) {
-        this.params["username"] = value;
+        this.params["roleName"] = value;
       }
       // 清空权限与菜单的选中
-      this.$refs.dataRole.setCheckedKeys([]);
+      this.$refs.dataPermission.setCheckedKeys([]);
       return true;
     },
     subDelete(id) {
@@ -230,55 +230,62 @@ export default {
     },
     getDataPermissions() {
       getPermissionTree().then(res => {
-        this.dataRoles = res;
-        this.dataRoles.forEach(element => {
-          this.dataRoleMap.push({ key: element.id, value: element.label });
+        this.dataPermissions = res;
+        this.dataPermissions.forEach(element => {
+          this.dataPermissionMap.push({
+            key: element.id,
+            value: element.label
+          });
         });
       });
     },
     handleCurrentChange(val) {
       if (val) {
         const _this = this;
-        this.$refs.dataRole.setCheckedKeys([]);
+        this.$refs.dataPermission.setCheckedKeys([]);
         this.currentId = val._id;
-        this.currentName = val.username;
+        this.currentName = val.roleName;
         this.showButton = true;
-        this.dataRoleIds = [];
-        val.dataRoles.forEach(function(data, index) {
-          _this.dataRoleIds.push(data._id);
-        });
+        this.dataPermissionIds = [];
+        if (val.permissions) {
+          val.permissions.forEach(function(data, index) {
+            if (data) {
+              _this.dataPermissionIds.push(data._id);
+            }
+          });
+        }
       }
     },
-    saveDataRole() {
-      this.dataRoleLoading = true;
+    saveDataPermission() {
+      this.dataPermissionLoading = true;
       const dataRole = {
         _id: this.currentId,
-        dataPermissions: [],
-        username: this.currentName
+        permissions: [],
+        roleName: this.currentName
       };
       const checkedIds = [];
-      this.$refs.dataRole.getCheckedKeys().forEach(function(data, index) {
+      this.$refs.dataPermission.getCheckedKeys().forEach(function(data, index) {
         checkedIds.push(data);
       });
-      this.dataRoleMap.forEach(item => {
+      this.dataPermissionMap.forEach(item => {
         checkedIds.forEach(element => {
           if (item.key === element) {
-            dataUser.dataPermissions.push(item.value);
+            dataRole.permissions.push(item.value);
           }
         });
       });
-      edit(dataUser)
+      edit(dataRole)
         .then(res => {
           this.$notify({
             title: "保存成功",
             type: "success",
             duration: 2500
           });
-          this.dataRoleLoading = false;
+          this.dataPermissionLoading = false;
           this.update();
         })
         .catch(err => {
-          this.dataRoleLoading = false;
+          this.dataPermissionLoading = false;
           console.log(err);
           // console.log(err.response.data.message);
         });
@@ -287,12 +294,8 @@ export default {
       // 无刷新更新 表格数据
       get(this.currentName).then(res => {
         for (let i = 0; i < this.data.length; i++) {
-          if (res.id === this.data[i].id) {
+          if (res._id === this.data[i]._id) {
             this.data[i] = res;
-            this.dataRoleIds = [];
-            data.dataPermissions.forEach(function(data, index) {
-              _this.dataRoleIds.push(data._id);
-            });
             break;
           }
         }
@@ -301,15 +304,15 @@ export default {
     add() {
       this.isAdd = true;
       this.$refs.form.dialog = true;
-      this.$refs.form.getRoles();
+      this.$refs.form.getPermissions();
       const _this = this.$refs.form;
-      _this.roleIds = [];
+      _this.permissionIds = [];
     },
     edit(data) {
       this.isAdd = false;
       const _this = this.$refs.form;
       _this.formm = {
-        username: data.username,
+        roleName: data.roleName,
         dataPermissions: data.dataPermissions,
         _id: data._id
       };
